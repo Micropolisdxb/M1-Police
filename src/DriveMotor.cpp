@@ -10,10 +10,9 @@ void Drive_Init()
   pinMode(LED_BUILTIN, OUTPUT);
   pinMode(Throttle_Pin, OUTPUT);
   pinMode(Enable_Power_SW, OUTPUT);
-
   pinMode(Speedometer_Pin, INPUT);
 
-  digitalWrite(Enable_Power_SW, LOW); // Initially OFF, No enable for drive motor
+  digitalWrite(Enable_Power_SW, HIGH); // Initially OFF, No enable for drive motor
 }
 
 void Drive_APP(int Throttle_Val, String Direction_Mode)
@@ -49,7 +48,7 @@ void Drive_RC(int Throttle_Val)
 
   if (Throttle_Val > (Drive_RC_Zero + 2))
   {
-    digitalWrite(Enable_Power_SW, HIGH);
+    digitalWrite(Enable_Power_SW, LOW);
 
     digitalWrite(Rev_SW, HIGH);
     int Throttle_PWM = map(Throttle_Val, Drive_RC_Zero, Drive_RC_Max, Drive_Min_Speed_PWM, Drive_MAX_Speed_PWM);
@@ -59,7 +58,7 @@ void Drive_RC(int Throttle_Val)
 
   else if (Throttle_Val < (Drive_RC_Zero - 2))
   {
-    digitalWrite(Enable_Power_SW, HIGH);
+    digitalWrite(Enable_Power_SW, LOW);
     digitalWrite(Rev_SW, LOW);
     int Throttle_PWM = map(Throttle_Val, Drive_RC_Min, Drive_RC_Zero, Drive_MAX_Speed_PWM, Drive_Min_Speed_PWM);
 
@@ -68,9 +67,11 @@ void Drive_RC(int Throttle_Val)
 
   else if (Throttle_Val == Drive_RC_Zero)
   {
-    digitalWrite(Rev_SW, digitalRead(Rev_SW));
-    analogWrite(Throttle_Pin, 0);
-    digitalWrite(Enable_Power_SW, LOW);
+    Serial.println("Drive Stop");
+
+    digitalWrite(Enable_Power_SW, HIGH);
+    digitalWrite(Rev_SW, LOW);
+    analogWrite(Throttle_Pin, 1);
   }
 }
 void Drive_Serial_Control()

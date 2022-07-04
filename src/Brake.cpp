@@ -27,7 +27,7 @@ int Read_Brake_Pot()
         avg += analogRead(Brake_Pot);
     }
     avg /= iteration;
-
+    Serial.println(avg);
     return int(avg);
 }
 
@@ -62,7 +62,7 @@ void Brake_Control_App(int Throttle_Value)
 
             Serial.printf("Forward Braking %d  \n", Throttle_Value);
         }
-            previous_throttle = Throttle_Value;
+        previous_throttle = Throttle_Value;
     }
 
     else if (Throttle_Value == App_Throttle_Zero && B_S != Braked)
@@ -75,15 +75,17 @@ void Brake_Control_App(int Throttle_Value)
 
 void EMERGENCY_Brake(int Emergency_Brake, int Release_Control, int Throttle)
 {
-    if ((Emergency_Brake > 1500 ) && B_S != Braked)
+    // Serial.printf("Emergency_Brake: %d  \n", Emergency_Brake);
+    // Serial.printf("Release_Control: %d  \n", Release_Control);
+    if ((Emergency_Brake > 1500) && B_S != Braked)
     {
         B_S = Brake;
     }
-    else if (Release_Control > 1500  && B_S != Released)
+    else if (Release_Control > 1500 && B_S != Released)
     {
         B_S = Release;
     }
-    else if (Emergency_Brake < 500  && Release_Control <500)
+    else if (Emergency_Brake < 500 && Release_Control < 500)
     {
         // B_S = Release;
         Brake_Control_RC(Throttle);
@@ -103,7 +105,6 @@ void Brake_Control_RC(int Throttle_Value)
             B_S = Release;
 
             Serial.printf("Forward  Releasing %d  \n", Throttle_PWM);
-            previous_throttle = Throttle_PWM;
         }
 
         else if ((Throttle_PWM - previous_throttle < -1) && Throttle_PWM < 30 && B_S != Braked)
@@ -111,8 +112,8 @@ void Brake_Control_RC(int Throttle_Value)
             B_S = Brake;
 
             Serial.printf("Forward Braking %d  \n", Throttle_PWM);
-            previous_throttle = Throttle_PWM;
         }
+        previous_throttle = Throttle_PWM;
     }
     else if (Throttle_Value < (RC_Throttle_Zero - 2))
     {
@@ -123,7 +124,6 @@ void Brake_Control_RC(int Throttle_Value)
             B_S = Release;
 
             Serial.printf("Forward  Releasing %d  \n", Throttle_PWM);
-            previous_throttle = Throttle_PWM;
         }
 
         else if ((Throttle_PWM - previous_throttle < -1) && Throttle_PWM < 30 && B_S != Braked)
@@ -131,12 +131,14 @@ void Brake_Control_RC(int Throttle_Value)
             B_S = Brake;
 
             Serial.printf("Forward Braking %d  \n", Throttle_PWM);
-            previous_throttle = Throttle_PWM;
         }
+        previous_throttle = Throttle_PWM;
     }
 
     else if (Throttle_Value == RC_Throttle_Zero && B_S != Braked)
     {
+        Serial.println("Brake Stop");
+
         B_S = Brake;
     }
 
@@ -149,10 +151,9 @@ void Brake_System()
     {
         if (Read_Brake_Pot() < Pot_Brake_Limit)
         {
-            digitalWrite(Brake_Dir, LOW);
+            digitalWrite(Brake_Dir, HIGH);
             analogWrite(Brake_PWM, Brake_Motor_Speed_PWM);
-            nh.loginfo("Brake");
-
+            // Serial.println("Brake");
         }
         else
             B_S = Braked;
@@ -161,18 +162,16 @@ void Brake_System()
     else if (B_S == Braked)
     {
         analogWrite(Brake_PWM, 0);
-            nh.loginfo("Braked");
-
+        // Serial.println("Braked");
     }
 
     else if (B_S == Release)
     {
         if (Read_Brake_Pot() > Pot_Release_Limit)
         {
-            digitalWrite(Brake_Dir, HIGH);
+            digitalWrite(Brake_Dir, LOW);
             analogWrite(Brake_PWM, Brake_Motor_Speed_PWM);
-            nh.loginfo("release");
-
+            // Serial.println("release");
         }
         else
             B_S = Released;
@@ -180,7 +179,7 @@ void Brake_System()
 
     else if (B_S == Released)
     {
-            nh.loginfo("Released");
+        // Serial.println("Released");
 
         analogWrite(Brake_PWM, 0);
     }

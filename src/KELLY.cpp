@@ -27,28 +27,27 @@ void Steering_Init()
 // Stering function without feedback
 void Steering_RC(int RC_Readings, int Steering_SW)
 {
-
+// Serial.println(Steering_SW);
   if ((RC_Readings >= (STEERING_RC_Zero + 2)) && (RC_Readings <= (STEERING_RC_Max)))
   {
-    Serial.print("Right: ");
-    if (Steering_SW == 1722)
+    if (Steering_SW == 282)
     {
-      Kelly_Front_Steering(RC_Readings, THROTTLE_FORWARD_PIN, STEERING_RC_Zero, STEERING_RC_Max, THROTTLE_MIN_PWM, THROTTLE_MAX_PWM, FORWARD_DIRECTION_SWITCH, LOW);
+      Kelly_Front_Steering(RC_Readings, THROTTLE_FORWARD_PIN, STEERING_RC_Zero, STEERING_RC_Max, THROTTLE_MIN_PWM, THROTTLE_MAX_PWM, FORWARD_DIRECTION_SWITCH, HIGH);
     }
-    else if (Steering_SW == 282)
+    else if (Steering_SW == 1722)
     {
-      Kelly_Back_Steering(RC_Readings, THROTTLE_REVERSE_PIN, STEERING_RC_Zero, STEERING_RC_Max, THROTTLE_MIN_PWM_REVERSE, THROTTLE_MAX_PWM_REVERSE, REVERSE_DIRECTION_SWITCH, HIGH);
+      Kelly_Back_Steering(RC_Readings, THROTTLE_REVERSE_PIN, STEERING_RC_Zero, STEERING_RC_Max, THROTTLE_MIN_PWM_REVERSE, THROTTLE_MAX_PWM_REVERSE, REVERSE_DIRECTION_SWITCH, LOW);
     }
-    else if (Steering_SW == 1002)
+    else 
     {
-      Kelly_Front_Steering(RC_Readings, THROTTLE_FORWARD_PIN, STEERING_RC_Zero, STEERING_RC_Max, THROTTLE_MIN_PWM, THROTTLE_MAX_PWM, FORWARD_DIRECTION_SWITCH, LOW);
-      Kelly_Back_Steering(RC_Readings, THROTTLE_REVERSE_PIN, STEERING_RC_Zero, STEERING_RC_Max, THROTTLE_MIN_PWM_REVERSE, THROTTLE_MAX_PWM_REVERSE, REVERSE_DIRECTION_SWITCH, HIGH);
+      Kelly_Front_Steering(RC_Readings, THROTTLE_FORWARD_PIN, STEERING_RC_Zero, STEERING_RC_Max, THROTTLE_MIN_PWM, THROTTLE_MAX_PWM, FORWARD_DIRECTION_SWITCH, HIGH);
+      Kelly_Back_Steering(RC_Readings, THROTTLE_REVERSE_PIN, STEERING_RC_Zero, STEERING_RC_Max, THROTTLE_MIN_PWM_REVERSE, THROTTLE_MAX_PWM_REVERSE, REVERSE_DIRECTION_SWITCH, LOW);
     }
   }
 
-  if ((RC_Readings > (STEERING_RC_Zero - 2)) && (RC_Readings < (STEERING_RC_Zero + 2)))
+  else if ((RC_Readings > (STEERING_RC_Zero - 2)) && (RC_Readings < (STEERING_RC_Zero + 2)))
   {
-    Serial.print("Zero");
+    Serial.println("Zero");
     analogWrite(THROTTLE_FORWARD_PIN, 1);
     analogWrite(THROTTLE_REVERSE_PIN, 1);
 
@@ -56,22 +55,22 @@ void Steering_RC(int RC_Readings, int Steering_SW)
     digitalWrite(REVERSE_DIRECTION_SWITCH, LOW);
   }
 
-  if ((RC_Readings >= STEERING_RC_Min) && (RC_Readings <= (STEERING_RC_Zero - 2)))
+  else if ((RC_Readings >= STEERING_RC_Min) && (RC_Readings <= (STEERING_RC_Zero - 2)))
   {
-    Serial.print("Left: ");
-    if (Steering_SW == 1722)
+    Serial.println("Left: ");
+    if (Steering_SW == 282)
     {
-      Kelly_Front_Steering(RC_Readings, THROTTLE_FORWARD_PIN, STEERING_RC_Zero, STEERING_RC_Max, THROTTLE_MIN_PWM, THROTTLE_MAX_PWM, FORWARD_DIRECTION_SWITCH, HIGH);
+      Kelly_Front_Steering(RC_Readings, THROTTLE_FORWARD_PIN, STEERING_RC_Zero, STEERING_RC_Max, THROTTLE_MIN_PWM, THROTTLE_MAX_PWM, FORWARD_DIRECTION_SWITCH, LOW);
     }
-    else if (Steering_SW == 282)
+    else if (Steering_SW == 1722)
     {
-      Kelly_Back_Steering(RC_Readings, THROTTLE_REVERSE_PIN, STEERING_RC_Zero, STEERING_RC_Max, THROTTLE_MIN_PWM_REVERSE, THROTTLE_MAX_PWM_REVERSE, REVERSE_DIRECTION_SWITCH, LOW);
+      Kelly_Back_Steering(RC_Readings, THROTTLE_REVERSE_PIN, STEERING_RC_Zero, STEERING_RC_Max, THROTTLE_MIN_PWM_REVERSE, THROTTLE_MAX_PWM_REVERSE, REVERSE_DIRECTION_SWITCH, HIGH);
     }
-    else if (Steering_SW == 1002)
+    else 
     {
 
-      Kelly_Front_Steering(RC_Readings, THROTTLE_FORWARD_PIN, STEERING_RC_Zero, STEERING_RC_Max, THROTTLE_MIN_PWM, THROTTLE_MAX_PWM, FORWARD_DIRECTION_SWITCH, HIGH);
-      Kelly_Back_Steering(RC_Readings, THROTTLE_REVERSE_PIN, STEERING_RC_Zero, STEERING_RC_Max, THROTTLE_MIN_PWM_REVERSE, THROTTLE_MAX_PWM_REVERSE, REVERSE_DIRECTION_SWITCH, LOW);
+      Kelly_Front_Steering(RC_Readings, THROTTLE_FORWARD_PIN, STEERING_RC_Zero, STEERING_RC_Max, THROTTLE_MIN_PWM, THROTTLE_MAX_PWM, FORWARD_DIRECTION_SWITCH, LOW);
+      Kelly_Back_Steering(RC_Readings, THROTTLE_REVERSE_PIN, STEERING_RC_Zero, STEERING_RC_Max, THROTTLE_MIN_PWM_REVERSE, THROTTLE_MAX_PWM_REVERSE, REVERSE_DIRECTION_SWITCH, HIGH);
     }
   }
 }
@@ -81,7 +80,7 @@ void Kelly_Front_Steering(int RC_Readings, int Throttle_Pin_num, int Throttle_Mi
 {
   int Throttle_PWM_Value = map(RC_Readings, Throttle_Min_Readings, Throttle_Max_Readings, Throttle_Min_PWM, Throttle_Max_PWM);
   digitalWrite(Front_Switch_pin, Switch_State);
-  analogWrite(Throttle_Pin_num, Throttle_PWM_Value);
+  analogWrite(2, Throttle_PWM_Value);
 }
 
 // Function to control the rear steering motor
@@ -89,5 +88,5 @@ void Kelly_Back_Steering(int RC_Readings, int Throttle_Pin_num, int Throttle_Min
 {
   int Throttle_PWM_Value_Rev = map(RC_Readings, Throttle_Min_Readings, Throttle_Max_Readings, Throttle_Min_PWM, Throttle_Max_PWM);
   digitalWrite(Back_Switch_Pin, Switch_State);
-  analogWrite(Throttle_Pin_num, Throttle_PWM_Value_Rev / 3);
+  analogWrite(3, Throttle_PWM_Value_Rev / 3);
 }

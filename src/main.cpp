@@ -26,7 +26,7 @@ SBUS x8r(Serial1);
 
 // channel, fail safe, and lost frames data
 uint16_t channels[16];
-bool failSafe;
+bool failSafe = HIGH;
 bool lostFrame;
 
 void setup()
@@ -35,11 +35,12 @@ void setup()
   // ROS_Init();
   Drive_Init();
   Brake_init();
-  // Steering_Init();
+  Steering_Init();
 
   Light_Init();
-  // Siren_Init();
+  Siren_Init();
   // Drone_Launch_Init();
+
 
   x8r.begin();
 }
@@ -56,7 +57,7 @@ void loop()
   int Release_Brake = channels[Brake_Release_CH];
   // int Siren_12_RC = channels[Siren12_CH];
   // int Siren_3_RC = channels[Siren3_CH];
-
+Serial.println(failSafe);
   if (!failSafe)
   {
 
@@ -70,8 +71,7 @@ void loop()
   {
     Brake_Control_RC(Drive_RC_Zero);
     Drive_RC(Drive_RC_Zero);
-    Light_RC(Front_Light_RC, Throttle_RC);
-
+    Light_RC(Front_Light_RC, Drive_RC_Zero);
     Steering_RC(Drive_RC_Zero, Steering_Control);
   }
 

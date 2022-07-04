@@ -6,7 +6,7 @@
 #define Brake_PWM 25    //Cytron 1 PWM 1
 #define Brake_Pot 23
 
-#define Brake_Motor_Speed_PWM 150
+#define Brake_Motor_Speed_PWM 250
 
 #define RC_Throttle_Zero   1002
 #define RC_Throttle_Max    1722
@@ -15,8 +15,8 @@
 #define App_Throttle_Zero   0
 #define App_Throttle_Max    100
 
-#define Pot_Brake_Limit     250
-#define Pot_Release_Limit   150
+#define Pot_Brake_Limit     200
+#define Pot_Release_Limit   100
 
 
 void Brake_init();
