@@ -8,10 +8,10 @@
         {
             "name": "PlatformIO",
             "includePath": [
-                "c:/Users/Dell_MP_1/OneDrive - Micropolis/Desktop/M1_ROS_Original/include",
-                "c:/Users/Dell_MP_1/OneDrive - Micropolis/Desktop/M1_ROS_Original/src",
-                "c:/Users/Dell_MP_1/OneDrive - Micropolis/Desktop/M1_ROS_Original/.pio/libdeps/teensy41/Bolder Flight Systems SBUS/src",
-                "c:/Users/Dell_MP_1/OneDrive - Micropolis/Desktop/M1_ROS_Original/.pio/libdeps/teensy41/Rosserial Arduino Library/src",
+                "c:/WORK/Projects/01-M1-Police/include",
+                "c:/WORK/Projects/01-M1-Police/src",
+                "c:/WORK/Projects/01-M1-Police/.pio/libdeps/teensy41/Bolder Flight Systems SBUS/src",
+                "c:/WORK/Projects/01-M1-Police/.pio/libdeps/teensy41/Rosserial Arduino Library/src",
                 "C:/Users/Dell_MP_1/.platformio/packages/framework-arduinoteensy/libraries/Ethernet/src",
                 "C:/Users/Dell_MP_1/.platformio/packages/framework-arduinoteensy/libraries/SPI",
                 "C:/Users/Dell_MP_1/.platformio/packages/framework-arduinoteensy/cores/teensy4",
@@ -117,10 +117,10 @@
             "browse": {
                 "limitSymbolsToIncludedHeaders": true,
                 "path": [
-                    "c:/Users/Dell_MP_1/OneDrive - Micropolis/Desktop/M1_ROS_Original/include",
-                    "c:/Users/Dell_MP_1/OneDrive - Micropolis/Desktop/M1_ROS_Original/src",
-                    "c:/Users/Dell_MP_1/OneDrive - Micropolis/Desktop/M1_ROS_Original/.pio/libdeps/teensy41/Bolder Flight Systems SBUS/src",
-                    "c:/Users/Dell_MP_1/OneDrive - Micropolis/Desktop/M1_ROS_Original/.pio/libdeps/teensy41/Rosserial Arduino Library/src",
+                    "c:/WORK/Projects/01-M1-Police/include",
+                    "c:/WORK/Projects/01-M1-Police/src",
+                    "c:/WORK/Projects/01-M1-Police/.pio/libdeps/teensy41/Bolder Flight Systems SBUS/src",
+                    "c:/WORK/Projects/01-M1-Police/.pio/libdeps/teensy41/Rosserial Arduino Library/src",
                     "C:/Users/Dell_MP_1/.platformio/packages/framework-arduinoteensy/libraries/Ethernet/src",
                     "C:/Users/Dell_MP_1/.platformio/packages/framework-arduinoteensy/libraries/SPI",
                     "C:/Users/Dell_MP_1/.platformio/packages/framework-arduinoteensy/cores/teensy4",

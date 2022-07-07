@@ -8,7 +8,7 @@
 
 #define Enable_Power_SW 36 // controlled from the power board
 
-#define Drive_MAX_Speed_PWM 180
+#define Drive_MAX_Speed_PWM 200
 #define Drive_Min_Speed_PWM 0
 
 #define Drive_RC_Zero 1002

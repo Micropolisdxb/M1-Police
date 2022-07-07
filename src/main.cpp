@@ -41,7 +41,6 @@ void setup()
   Siren_Init();
   // Drone_Launch_Init();
 
-
   x8r.begin();
 }
 void loop()
@@ -57,7 +56,7 @@ void loop()
   int Release_Brake = channels[Brake_Release_CH];
   // int Siren_12_RC = channels[Siren12_CH];
   // int Siren_3_RC = channels[Siren3_CH];
-Serial.println(failSafe);
+  Serial.println(failSafe);
   if (!failSafe)
   {
 
