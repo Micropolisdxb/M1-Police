@@ -67,7 +67,7 @@ void Drive_RC(int Throttle_Val)
 
   else if (Throttle_Val == Drive_RC_Zero)
   {
-    Serial.println("Drive Stop");
+    // Serial.println("Drive Stop");
 
     digitalWrite(Enable_Power_SW, HIGH);
     digitalWrite(Rev_SW, LOW);

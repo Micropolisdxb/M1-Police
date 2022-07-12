@@ -27,7 +27,7 @@ int Read_Brake_Pot()
         avg += analogRead(Brake_Pot);
     }
     avg /= iteration;
-    Serial.println(avg);
+    // Serial.println(avg);
     return int(avg);
 }
 

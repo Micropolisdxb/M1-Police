@@ -36,16 +36,19 @@ void Drone_Launch_Init()
     pinMode(Door2_Lifter_PWM, OUTPUT);
     pinMode(Door2_Lifter_Dir, OUTPUT);
 
-    pinMode(Door2_Enable, OUTPUT);
-    pinMode(Lifter_Enable, OUTPUT);
+    pinMode(Door2_Enable_Pin, OUTPUT);
+    pinMode(Lifter_Enable_Pin, OUTPUT);
 
     pinMode(ARM_Pot, INPUT);
+    pinMode(Door1_Feedback, INPUT_PULLUP);
+    pinMode(Door2_Feedback, INPUT_PULLUP);
 
     analogWrite(ARM_PWM, 0);
     analogWrite(Door1_PWM, 0);
+    analogWrite(Door2_Lifter_PWM, 0);
 
-    digitalWrite(Door2_Enable, LOW);
-    digitalWrite(Lifter_Enable, LOW);
+    digitalWrite(Door2_Enable_Pin, LOW);
+    digitalWrite(Lifter_Enable_Pin, LOW);
 }
 
 int Read_ARM_Pot()
@@ -236,8 +239,8 @@ void Drone_Launch_State_Fn()
 
     else if (DLS == Door2_Lifter_Open)
     {
-        digitalWrite(Door2_Enable, HIGH);
-        digitalWrite(Lifter_Enable, HIGH);
+        digitalWrite(Door2_Enable_Pin, HIGH);
+        digitalWrite(Lifter_Enable_Pin, HIGH);
         digitalWrite(Door2_Lifter_Dir, HIGH);
         analogWrite(Door2_Lifter_PWM, 255);
         Doors_Open_PrevMillis = millis();
@@ -267,8 +270,8 @@ void Drone_Launch_State_Fn()
 
     else if (DLS == Door2_Lifter_Close)
     {
-        digitalWrite(Door2_Enable, HIGH);
-        digitalWrite(Lifter_Enable, HIGH);
+        digitalWrite(Door2_Enable_Pin, HIGH);
+        digitalWrite(Lifter_Enable_Pin, HIGH);
         digitalWrite(Door2_Lifter_Dir, LOW);
         analogWrite(Door2_Lifter_PWM, 255);
     }
@@ -286,8 +289,8 @@ void Drone_Launch_State_Fn()
 
         analogWrite(Door1_PWM, 0);
 
-        digitalWrite(Door2_Enable, LOW);
-        digitalWrite(Lifter_Enable, LOW);
+        digitalWrite(Door2_Enable_Pin, LOW);
+        digitalWrite(Lifter_Enable_Pin, LOW);
         analogWrite(Door2_Lifter_PWM, 0);
     }
 
@@ -300,6 +303,7 @@ void Drone_Launch_State_Fn()
             DLS = Door1_Door2_Lifter_Stop;
             DoorsState = 0;
         }
+
         if (DoorsState == 2 && (millis() - Doors_Close_PrevMillis) > 15000)
         {
             DLS = Door1_Door2_Lifter_Stop;
@@ -307,8 +311,9 @@ void Drone_Launch_State_Fn()
         }
     }
 }
-unsigned long Drone_PrevMillis = 0;
 
+unsigned long Drone_PrevMillis = 0;
+int state = 0;
 void Drone_Serial_Control()
 {
     char SerialChar = ' ';
@@ -322,68 +327,142 @@ void Drone_Serial_Control()
 
     if (millis() - Drone_PrevMillis > 100)
     {
-        Serial.printf("Speed: %d  \n", int(Read_ARM_Pot()));
+
+        Serial.printf("Limit switch: %d  \n", int(digitalRead(Door1_Feedback)));
         Drone_PrevMillis = millis();
     }
 
     if (SerialChar == '1')
     {
-        digitalWrite(ARM_Dir, HIGH);
-        analogWrite(ARM_PWM, 125);
-        Serial.println("Arm HIGH");
+        digitalWrite(ARM_Dir, Arm_Open_State); // to be checked
+        analogWrite(ARM_PWM, Arm_Speed);
+        Serial.println("Arm OPEN");
     }
 
     else if (SerialChar == '2')
     {
-        digitalWrite(ARM_Dir, LOW);
-        analogWrite(ARM_PWM, 125);
-        Serial.println("Arm LOW");
+        digitalWrite(ARM_Dir, Arm_Close_State);
+        analogWrite(ARM_PWM, Arm_Speed);
+        Serial.println("Arm Close");
     }
 
     else if (SerialChar == '3')
     {
-        digitalWrite(Door1_Dir, HIGH);
-        analogWrite(Door1_PWM, 125);
-        Serial.println("Door1 HIGH");
+        digitalWrite(Door1_Dir, Door1_Open_State);
+        analogWrite(Door1_PWM, Door1_Speed);
+        Serial.println("Door1 OPEN");
     }
 
     else if (SerialChar == '4')
     {
-        digitalWrite(Door1_Dir, LOW);
-        analogWrite(Door1_PWM, 125);
-        Serial.println("Door1 LOW");
+        digitalWrite(Door1_Dir, Door1_Close_State);
+        analogWrite(Door1_PWM, Door1_Speed);
+        Serial.println("Door1 Close");
     }
     else if (SerialChar == '5')
     {
-        digitalWrite(Door2_Lifter_Dir, HIGH);
-        analogWrite(Door2_Lifter_PWM, 125);
-        Serial.println("Door2 Lifter HIGH");
+        // digitalWrite(Door2_Enable_Pin, HIGH);
+
+        digitalWrite(Door2_Lifter_Dir, Door2_Lifter_Open_State);
+        analogWrite(Door2_Lifter_PWM, Door2_Lifter_Speed);
+        Serial.println("Door2 Lifter OPEN");
     }
 
     else if (SerialChar == '6')
     {
-        digitalWrite(Door2_Lifter_Dir, LOW);
-        analogWrite(Door2_Lifter_PWM, 125);
-        Serial.println("Door2 Lifter LOW");
+        // digitalWrite(Door2_Enable_Pin, HIGH);
+
+        digitalWrite(Door2_Lifter_Dir, Door2_Lifter_Close_State);
+        analogWrite(Door2_Lifter_PWM, Door2_Lifter_Speed);
+        Serial.println("Door2 Lifter Close");
     }
     else if (SerialChar == '7')
     {
-        digitalWrite(Door2_Enable, !digitalRead(Door2_Enable));
-        Serial.println("Door2 enable");
+        digitalWrite(Door2_Enable_Pin, !digitalRead(Door2_Enable_Pin));
+        Serial.println("Door2 enable: " + String(digitalRead(Door2_Enable_Pin)));
     }
 
     else if (SerialChar == '8')
     {
-        digitalWrite(Lifter_Enable, !digitalRead(Lifter_Enable));
-        Serial.println("Lifter enable");
+        digitalWrite(Lifter_Enable_Pin, !digitalRead(Lifter_Enable_Pin));
+        Serial.println("Lifter enable: " + String(digitalRead(Lifter_Enable_Pin)));
     }
+    // else if (SerialChar == '8')
+    // {
+    //     state = 1;
+    //     Drone_PrevMillis = millis();
+    // }
+
+    else if (SerialChar == '9')
+    {
+
+        state = 2;
+        Drone_PrevMillis = millis();
+
+    }
+
     else if (SerialChar == '0')
     {
-        digitalWrite(Lifter_Enable, LOW);
-        digitalWrite(Door2_Enable, LOW);
+        digitalWrite(Lifter_Enable_Pin, Lifter_Disable);
+        digitalWrite(Door2_Enable_Pin, Door2_Disable);
         analogWrite(ARM_PWM, 0);
         analogWrite(Door1_PWM, 0);
         analogWrite(Door2_Lifter_PWM, 0);
-        Serial.println("Lifter enable");
+        Serial.println("!!!STOP!!!");
+    }
+    if (state == 1)
+    {
+        if (millis() - Drone_PrevMillis < 2000)
+        {
+            Serial.println("Doors Open:");
+            Serial.println("- Door1 Open:");
+            digitalWrite(Door1_Dir, Door1_Open_State);
+            analogWrite(Door1_PWM, Door1_Speed);
+        }
+        else if (millis() - Drone_PrevMillis < 12000)
+        {
+            Serial.println("- Door2 Open:");
+            digitalWrite(Lifter_Enable_Pin, Lifter_Enable);
+            digitalWrite(Door2_Enable_Pin, Door2_Enable);
+            digitalWrite(Door2_Lifter_Dir, Door2_Lifter_Open_State);
+            analogWrite(Door2_Lifter_PWM, Door2_Lifter_Speed);
+        }
+        else if (millis() - Drone_PrevMillis > 12000)
+        {
+            Serial.println("- !!!STOP!!!");
+            digitalWrite(Lifter_Enable_Pin, Lifter_Disable);
+            digitalWrite(Door2_Enable_Pin, Door2_Disable);
+            analogWrite(Door1_PWM, 0);
+            analogWrite(Door2_Lifter_PWM, 0);
+            state = 0;
+        }
+    }
+    else if (state == 2)
+    {
+            Serial.println("Doors Close:");
+        if (millis() - Drone_PrevMillis < 2000)
+        {
+            Serial.println("- Door2 Close:");
+            digitalWrite(Lifter_Enable_Pin, Lifter_Enable);
+            digitalWrite(Door2_Enable_Pin, Door2_Enable);
+
+            digitalWrite(Door2_Lifter_Dir, Door2_Lifter_Close_State);
+            analogWrite(Door2_Lifter_PWM, Door2_Lifter_Speed);
+        }
+        else if (millis() - Drone_PrevMillis < 12000)
+        {
+            Serial.println("- Door1 Close:");
+            digitalWrite(Door1_Dir, Door1_Close_State);
+            analogWrite(Door1_PWM, Door1_Speed);
+        }
+        else if (millis() - Drone_PrevMillis > 12000)
+        {
+            Serial.println("- !!!STOP!!!");
+            digitalWrite(Lifter_Enable_Pin, Lifter_Disable);
+            digitalWrite(Door2_Enable_Pin, Door2_Disable);
+            analogWrite(Door1_PWM, 0);
+            analogWrite(Door2_Lifter_PWM, 0);
+            state = 0;
+        }
     }
 }

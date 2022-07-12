@@ -61,6 +61,7 @@ void Light_RC(int Front_Light_Control, int Throttle_Val)
     // Front Light
     if (Front_Light_Control == Full_Front_Light) // Full Light
     {
+        // Serial.println("Full_Front_Light");
         digitalWrite(Big_Lights, HIGH);
         digitalWrite(Med_Small_Lights, HIGH);
         digitalWrite(Siren_Lights, HIGH);
@@ -68,6 +69,7 @@ void Light_RC(int Front_Light_Control, int Throttle_Val)
 
     else if (Front_Light_Control == Head_Front_Light) // Head Light
     {
+        // Serial.println("Head_Front_Light");
         digitalWrite(Big_Lights, HIGH);
         digitalWrite(Med_Small_Lights, LOW);
         digitalWrite(Siren_Lights, HIGH);
@@ -75,6 +77,7 @@ void Light_RC(int Front_Light_Control, int Throttle_Val)
 
     else if (Front_Light_Control == OFF_Front_Light) // OFF Light
     {
+        // Serial.println("OFF_Front_Light");
         digitalWrite(Big_Lights, LOW);
         digitalWrite(Med_Small_Lights, LOW);
         digitalWrite(Siren_Lights, LOW);

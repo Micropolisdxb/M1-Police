@@ -47,7 +47,8 @@ void Steering_RC(int RC_Readings, int Steering_SW)
 
   else if ((RC_Readings > (STEERING_RC_Zero - 2)) && (RC_Readings < (STEERING_RC_Zero + 2)))
   {
-    Serial.println("Zero");
+    // Serial.println("Zero");
+    
     analogWrite(THROTTLE_FORWARD_PIN, 1);
     analogWrite(THROTTLE_REVERSE_PIN, 1);
 
