@@ -354,6 +354,7 @@ void Siren_Serial_Control()
 
     else if (Siren_Serial_Data == '3')
     {
+        Serial.println("Siren3");
         Siren_Delay(Siren3, 200);
         delay(70);
 
@@ -362,6 +363,5 @@ void Siren_Serial_Control()
 
         Siren_Delay(Siren3, 500);
 
-        Serial.println("Siren3");
     }
 }

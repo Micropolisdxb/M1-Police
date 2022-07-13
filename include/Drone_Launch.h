@@ -18,7 +18,7 @@
 #define Door2_Enable_Pin 38
 #define Lifter_Enable_Pin 35
 
-
+// --------------------- Config--------------------
 #define ARM_Pot_Max 800
 #define ARM_Pot_Min 300
 #define ARM_Pot_Door1 450
@@ -30,11 +30,11 @@
 
 #define Door1_Open_State    HIGH
 #define Door1_Close_State   LOW
-#define Door1_Speed         125
+#define Door1_Speed         210
 
 #define Door2_Lifter_Open_State     HIGH
 #define Door2_Lifter_Close_State    LOW
-#define Door2_Lifter_Speed          125
+#define Door2_Lifter_Speed          250
 
 #define Door2_Enable LOW
 #define Door2_Disable HIGH

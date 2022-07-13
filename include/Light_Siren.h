@@ -15,9 +15,9 @@
 #define Siren_Light_ON  1722
 #define Siren_Light_OFF 282
 
-#define Siren1 8
+#define Siren1 16
 #define Siren2 9
-#define Siren3 16
+#define Siren3 8
 
 #define Siren_SW_Min    283
 #define Siren_SW_Zero   1002
@@ -38,6 +38,8 @@ void Siren_Init();
 
 void Siren_App(int Siren1_App, int Siren2_App, int Siren3_App);
 void Siren_RC(int Siren1_2_RC, int Siren3_RC);
+void Siren_Serial_Control();
+
 
 
 #endif
