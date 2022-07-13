@@ -50,14 +50,15 @@ void loop()
 
   int Throttle_RC = channels[Throttle_RC_CH];
   int Steering_Reading = channels[Steering_RC_CH];
+  int Drone_RC = channels[Drone_CH];
   int Front_Light_RC = channels[Front_Light_CH];
   int Steering_Control = channels[Steering_Control_CH];
   int EM_Brake = channels[Emergency_Brake_CH];
   int Release_Brake = channels[Brake_Release_CH];
   int Siren_12_RC = channels[Siren12_CH];
   int Siren_3_RC = channels[Siren3_CH];
-  Serial.printf("Siren_12_RC: %d  \n", Siren_12_RC);
-  Serial.printf("Siren_3_RC: %d  \n", Siren_3_RC);
+  // Serial.printf("Siren_12_RC: %d  \n", Siren_12_RC);
+  // Serial.printf("Siren_3_RC: %d  \n", Siren_3_RC);
 
   // Serial.println(failSafe);
   if (!failSafe)
@@ -66,20 +67,21 @@ void loop()
     EMERGENCY_Brake(EM_Brake, Release_Brake, Throttle_RC);
     Drive_RC(Throttle_RC);
     Steering_RC(Steering_Reading, Steering_Control);
-    Light_RC(Front_Light_RC, Throttle_RC);
-    // Drone_Serial_Control();
+    Light_RC(Front_Light_RC, Throttle_RC, Drone_RC);
+    // Drone_Control_RC(Drone_RC);
+
+    Drone_Serial_Control();
     Siren_RC(Siren_12_RC, Siren_3_RC);
-    // Siren_Serial_Control();
   }
 
   else
   {
     Brake_Control_RC(Drive_RC_Zero);
     Drive_RC(Drive_RC_Zero);
-    Light_RC(Front_Light_RC, Drive_RC_Zero);
+    Light_RC(Front_Light_RC, Drive_RC_Zero, Drone_RC);
     Steering_RC(Drive_RC_Zero, Steering_Control);
     // Drone_Serial_Control();
-    Siren_Serial_Control();
+    // Siren_Serial_Control();
 
   }
 
