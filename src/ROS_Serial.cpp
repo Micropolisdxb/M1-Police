@@ -24,12 +24,19 @@ int G_Siren_Light_Msg = 0;
 int G_Disc_Brake_Msg = 0;
 int G_Drone_Launch_Msg = 0;
 
+int Connection_Counter = 0;
+unsigned long ROS_prevMillis = 0;
+
 void Drive_Mode_Cb(const std_msgs::String &Mode_Msg)
 {
   nh.loginfo("----------------");
 
   G_Mode_Msg = String(Mode_Msg.data).trim();
-
+  if (G_Mode_Msg == idleStr)
+  {
+    G_Emergency_Brake_Msg = 1;
+    G_Throttle_Msg = 0;
+  }
   // Debugging
   nh.loginfo((String("Drive Mode = ") + (G_Mode_Msg.c_str())).c_str());
 }
@@ -52,6 +59,7 @@ void Emergency_Brake_Cb(const std_msgs::Int16 &Em_Brake_Msg)
 
 void Throttle_Cb(const std_msgs::Int16 &Throttle_Msg)
 {
+  Connection_Counter = 0;
   G_Throttle_Msg = int(Throttle_Msg.data);
   nh.loginfo((String("Throttle = ") + String(Throttle_Msg.data).c_str()).c_str());
 }
@@ -156,4 +164,26 @@ void ROS_Init()
 
   nh.subscribe(Disc_Brake_Subscriber);
   nh.subscribe(Drone_Launch_Subscriber);
+}
+void check_connection()
+{
+  Connection_Counter++;
+  if (Connection_Counter > 100)
+  {
+    G_Throttle_Msg = 0;
+    nh.loginfo(String("------------------------").c_str());
+    nh.loginfo(String("No Connection Throttle 0").c_str());
+    nh.loginfo(String("------------------------").c_str());
+  }
+
+  Connection_Counter = Connection_Counter > 200 ? 100 : Connection_Counter;
+
+  if (millis() - ROS_prevMillis > 1000)
+  {
+    nh.loginfo(String("------------------------").c_str());
+    nh.loginfo(String(Connection_Counter).c_str());
+    nh.loginfo(String("------------------------").c_str());
+    // Connection_Counter = 0;
+    ROS_prevMillis = millis();
+  }
 }

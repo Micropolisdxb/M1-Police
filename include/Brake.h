@@ -24,6 +24,8 @@ void Brake_init();
 void Brake_Control_App(int Throttle_Value);
 void Brake_Control_RC(int Throttle_Value);
 void Brake_Control_Serial();
+void EMERGENCY_Brake_App(int Emergency_Brake_Msg, int Throttle);
+
 
 
 void EMERGENCY_Brake(int Emergency_Brake, int Release_Control, int Throttle);

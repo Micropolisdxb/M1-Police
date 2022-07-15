@@ -272,12 +272,12 @@ void Siren_App(int Siren1_App, int Siren2_App, int Siren3_App)
         if (Siren1_App == 1 && Siren2_App == 0 && Siren3_App == 0) // Activate Siren 1
         {
             Siren_S = Pulse1;
-            Siren_Prev_Millis = millis();
+            Siren_Delay(Siren1, Siren_Pulse_Duration);
         }
         else if (Siren1_App == 0 && Siren2_App == 1 && Siren3_App == 0) // Activate Siren 1
         {
             Siren_S = Pulse2;
-            Siren_Prev_Millis = millis();
+            Siren_Delay(Siren2, Siren_Pulse_Duration);
         }
         else if (Siren1_App == 0 && Siren2_App == 0 && Siren3_App == 1) // Activate Siren 1
         {
@@ -289,12 +289,10 @@ void Siren_App(int Siren1_App, int Siren2_App, int Siren3_App)
             switch (Siren_S)
             {
             case Pulse1:
-                Siren_S = Pulse1;
-                Siren_Prev_Millis = millis();
+                Siren_Delay(Siren1, Siren_Pulse_Duration);
                 break;
             case Pulse2:
-                Siren_S = Pulse2;
-                Siren_Prev_Millis = millis();
+                Siren_Delay(Siren2, Siren_Pulse_Duration);
                 break;
 
             default:

@@ -122,60 +122,66 @@ int DoorsState = 0;
  * ! Stop flashing
  * */
 
-// void Drone_Control_App(int Drone_Control)
-// {
-//     if (Drone_Control != PrevDroneState_App && Drone_Control == 0)
-//         Doors_Close_PrevMillis = millis();
+void Drone_Control_App(int Drone_Control_APP)
+{
+    
+    if (DoorState == Doors_Closed)
+    { // check if doors are closed and ready to open
 
-//     if (Drone_Control == 1 && Read_ARM_Pot() < (ARM_Pot_Max * 0.1)) // Open Doors
-//     {
-//         DoorsState = 1;
-//     }
-//     else if (Drone_Control == 0 && Read_ARM_Pot() > (ARM_Pot_Max * 0.9))
-//     {
-//         DoorsState = 2;
-//     }
-//     else
-//     {
-//         // nh.loginfo("Doors Wait ...");
-//     }
+        if (Drone_Control_APP != PrevDroneState_App && Drone_Control_APP == 1)
+        { // check if previous state diff than the current also check if its value
+            Serial.println("Doors Oppening");
+            DoorState = Doors_Opening;
+            Doors_PrevMillis = millis();
+        }
+    }
+    else if (DoorState == Doors_Opening)
+    {
+        if (millis() - Doors_PrevMillis < 13000) // 13
+        {
 
-//     if (DoorsState == 1)
-//     {
-//         // nh.loginfo("Doors Openning ...");
-//         Flashing();
+            DronLaunchState = All_Doors_Open;
+            Flashing();
+        }
+        else
+        {
+            DronLaunchState = All_Doors_Stop;
+            DoorState = Doors_Opened;
+            digitalWrite(Med_Small_Lights, LOW);
+            Serial.println("Doors Oppened");
+        }
+        Drone_Launch_State();
+    }
+    else if (DoorState == Doors_Opened)
+    { // check if doors are closed and ready to Close
 
-//         if (Read_ARM_Pot() < ARM_Pot_Max)
-//             DronLaunchState = Arm_Open;
+        if (Drone_Control_APP != PrevDroneState_App && Drone_Control_APP == 0)
+        { // check if previous state diff than the current also check if its value
+            Serial.println("Doors Closing");
+            DoorState = Doors_Closing;
+            Doors_PrevMillis = millis();
+        }
+    }
 
-//         else
-//             DronLaunchState = Arm_Stop;
+    else if (DoorState == Doors_Closing)
+    {
+        if (millis() - Doors_PrevMillis < 15000) // 15
+        {
 
-//         if (Read_ARM_Pot() == ARM_Pot_Door1)
-//             DronLaunchState = Door1_Open;
-
-//         else if (Read_ARM_Pot() == ARM_Pot_Door2)
-//         {
-//             DronLaunchState = Door2_Open;
-//         }
-//     }
-
-//     else if (DoorsState == 2)
-//     {
-//         // nh.loginfo("Doors Closing ...");
-
-//         Flashing();
-
-//         if (millis() - Doors_Close_PrevMillis < 5000)
-//             DronLaunchState = Door2_Close;
-//         else if (millis() - Doors_Close_PrevMillis < 8000)
-//             DronLaunchState = Door1_Close;
-//         else if (millis() - Doors_Close_PrevMillis < 12000)
-//             DronLaunchState = Arm_Close;
-//     }
-//     PrevDroneState_App = Drone_Control;
-//     Drone_Launch_State();
-// }
+            DronLaunchState = All_Doors_Close;
+            Flashing();
+        }
+        else
+        {
+            DronLaunchState = All_Doors_Stop;
+            DoorState = Doors_Closed;
+            digitalWrite(Med_Small_Lights, LOW);
+            Serial.println("Doors Closed");
+        }
+        Drone_Launch_State();
+    }
+    PrevDroneState_App = Drone_Control_APP;
+}
 
 void Drone_Control_RC(int Drone_Control_RC)
 {
