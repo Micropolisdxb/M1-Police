@@ -6,6 +6,8 @@
 
 extern ros::NodeHandle nh;
 void ROS_Init();
+void check_connection();
+
 
 extern String G_Mode_Msg ;
 extern String G_Direction_Msg ;

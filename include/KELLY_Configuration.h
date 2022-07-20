@@ -33,10 +33,18 @@
 #define STEERING_RC_Max 1722
 #define STEERING_RC_Min 282
 
+// APP Limits
+#define STEERING_APP_Zero 0
+#define STEERING_APP_Max 100
+#define STEERING_APP_Min -100
+
+
 void Steering_Init();
 void Kelly_Front_Steering(int RC_Readings,int Throttle_Pin_num, int Throttle_Min_Readings, int Throttle_Max_Readings, int Throttle_Min_PWM, int Throttle_Max_PWM, int Front_Switch_pin ,int Switch_State);
 void Kelly_Back_Steering(int RC_Readings,int Throttle_Pin_num,  int Throttle_Min_Readings, int Throttle_Max_Readings, int Throttle_Min_PWM, int Throttle_Max_PWM, int Back_Switch_Pin , int Switch_State);
 void Steering_RC(int RC_Readings, int Steering_SW);
+void Steering_App(int App_Readings);
+
 
 
 #endif

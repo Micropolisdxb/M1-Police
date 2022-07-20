@@ -20,7 +20,7 @@ void Drive_Init();
 
 void Drive_Serial_Control();
 
-void Drive_APP(int Throttle_Val, String Direction_Mode);
+void Drive_APP(int Throttle_Val, String Direction_Mode, int Emergency_Brake);
 void Drive_RC(int Throttle_Val);
 
 

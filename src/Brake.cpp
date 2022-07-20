@@ -27,7 +27,7 @@ int Read_Brake_Pot()
         avg += analogRead(Brake_Pot);
     }
     avg /= iteration;
-    Serial.println(avg);
+    // Serial.println(avg);
     return int(avg);
 }
 
@@ -52,15 +52,15 @@ void Brake_Control_App(int Throttle_Value)
         {
             B_S = Release;
 
-            Serial.printf("Forward  Releasing %d  \n", Throttle_Value);
+            Serial.printf("Forward  Releasing APP %d  \n", Throttle_Value);
             // previous_throttle = Throttle_Value;
         }
 
-        else if ((Throttle_Value - previous_throttle <= -1) && Throttle_Value < 30 && B_S != Braked)
+        else if ((Throttle_Value - previous_throttle < -1) && Throttle_Value < 30 && B_S != Braked)
         {
             B_S = Brake;
 
-            Serial.printf("Forward Braking %d  \n", Throttle_Value);
+            Serial.printf("Forward Braking  APP %d  \n", Throttle_Value);
         }
         previous_throttle = Throttle_Value;
     }
@@ -93,6 +93,25 @@ void EMERGENCY_Brake(int Emergency_Brake, int Release_Control, int Throttle)
 
     Brake_System();
 }
+
+void EMERGENCY_Brake_App(int Emergency_Brake_Msg, int Throttle)
+{
+    // Serial.printf("Emergency_Brake: %d  \n", Emergency_Brake);
+    // Serial.printf("Release_Control: %d  \n", Release_Control);
+    if (Emergency_Brake_Msg && B_S != Braked)
+    {
+        B_S = Brake;
+    }
+
+    else if (!Emergency_Brake_Msg)
+    {
+        // B_S = Release;
+        Brake_Control_App(Throttle);
+    }
+
+    Brake_System();
+}
+
 void Brake_Control_RC(int Throttle_Value)
 {
 
@@ -104,14 +123,14 @@ void Brake_Control_RC(int Throttle_Value)
         {
             B_S = Release;
 
-            Serial.printf("Forward  Releasing %d  \n", Throttle_PWM);
+            Serial.printf("Forward  Releasing RC %d  \n", Throttle_PWM);
         }
 
         else if ((Throttle_PWM - previous_throttle < -1) && Throttle_PWM < 30 && B_S != Braked)
         {
             B_S = Brake;
 
-            Serial.printf("Forward Braking %d  \n", Throttle_PWM);
+            Serial.printf("Forward Braking RC %d  \n", Throttle_PWM);
         }
         previous_throttle = Throttle_PWM;
     }

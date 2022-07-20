@@ -15,7 +15,7 @@ void Drive_Init()
   digitalWrite(Enable_Power_SW, HIGH); // Initially OFF, No enable for drive motor
 }
 
-void Drive_APP(int Throttle_Val, String Direction_Mode)
+void Drive_APP(int Throttle_Val, String Direction_Mode, int Emergency_Brake)
 {
   int Throttle_PWM = map(Throttle_Val, 0, 100, Drive_Min_Speed_PWM, Drive_MAX_Speed_PWM);
 
@@ -28,18 +28,18 @@ void Drive_APP(int Throttle_Val, String Direction_Mode)
     digitalWrite(Rev_SW, LOW);
   }
 
-  if (Throttle_PWM > 0)
+  if (Throttle_PWM > 3 && !Emergency_Brake)
   {
     analogWrite(Throttle_Pin, Throttle_PWM);
 
-    digitalWrite(Enable_Power_SW, HIGH);
+    digitalWrite(Enable_Power_SW, LOW);
   }
 
-  else if (Throttle_PWM == 0)
+  else if (Throttle_PWM == 0 || Emergency_Brake)
   {
     analogWrite(Throttle_Pin, 0);
 
-    digitalWrite(Enable_Power_SW, LOW);
+    digitalWrite(Enable_Power_SW, HIGH);
   }
 }
 
@@ -67,7 +67,7 @@ void Drive_RC(int Throttle_Val)
 
   else if (Throttle_Val == Drive_RC_Zero)
   {
-    Serial.println("Drive Stop");
+    // Serial.println("Drive Stop");
 
     digitalWrite(Enable_Power_SW, HIGH);
     digitalWrite(Rev_SW, LOW);

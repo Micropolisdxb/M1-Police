@@ -56,32 +56,38 @@ void Light_App(int Full_Light, int Head_Light, int Siren_Light_Val, String Drive
     }
 }
 
-void Light_RC(int Front_Light_Control, int Throttle_Val)
+void Light_RC(int Front_Light_Control, int Throttle_Val, int Flash_Control)
 {
-    // Front Light
-    if (Front_Light_Control == Full_Front_Light) // Full Light
+    if (Flash_Control == Drone_Flashing)
     {
-        digitalWrite(Big_Lights, HIGH);
-        digitalWrite(Med_Small_Lights, HIGH);
-        digitalWrite(Siren_Lights, HIGH);
-    }
+        // Front Light
+        if (Front_Light_Control == Full_Front_Light) // Full Light
+        {
+            // Serial.println("Full_Front_Light");
+            digitalWrite(Big_Lights, HIGH);
+            digitalWrite(Med_Small_Lights, HIGH);
+            digitalWrite(Siren_Lights, HIGH);
+        }
 
-    else if (Front_Light_Control == Head_Front_Light) // Head Light
-    {
-        digitalWrite(Big_Lights, HIGH);
-        digitalWrite(Med_Small_Lights, LOW);
-        digitalWrite(Siren_Lights, HIGH);
-    }
+        else if (Front_Light_Control == Head_Front_Light) // Head Light
+        {
+            // Serial.println("Head_Front_Light");
+            digitalWrite(Big_Lights, HIGH);
+            digitalWrite(Med_Small_Lights, LOW);
+            digitalWrite(Siren_Lights, HIGH);
+        }
 
-    else if (Front_Light_Control == OFF_Front_Light) // OFF Light
-    {
-        digitalWrite(Big_Lights, LOW);
-        digitalWrite(Med_Small_Lights, LOW);
-        digitalWrite(Siren_Lights, LOW);
-    }
+        else if (Front_Light_Control == OFF_Front_Light) // OFF Light
+        {
+            // Serial.println("OFF_Front_Light");
+            digitalWrite(Big_Lights, LOW);
+            digitalWrite(Med_Small_Lights, LOW);
+            digitalWrite(Siren_Lights, LOW);
+        }
 
-    // Back Light
-    Throttle_Val < 1002 ? digitalWrite(Back_Light, HIGH) : digitalWrite(Back_Light, LOW);
+        // Back Light
+        Throttle_Val < 1002 ? digitalWrite(Back_Light, HIGH) : digitalWrite(Back_Light, LOW);
+    }
 }
 
 void Light_Control_Serial()
@@ -146,6 +152,12 @@ enum Siren_State
 
 void Siren_States_Fn();
 
+void Siren_Delay(int Siren_Pin, int delay_Time)
+{
+    digitalWrite(Siren_Pin, LOW);
+    delay(delay_Time);
+    digitalWrite(Siren_Pin, HIGH);
+}
 void Siren_Init()
 {
     pinMode(Siren1, OUTPUT);
@@ -155,25 +167,8 @@ void Siren_Init()
     digitalWrite(Siren1, HIGH);
     digitalWrite(Siren2, HIGH);
     digitalWrite(Siren3, HIGH);
+    // Siren_Delay(Siren3, 10);
 }
-
-void Siren_Delay(int Siren_Pin, int delay_Time)
-{
-    digitalWrite(Siren_Pin, LOW);
-    delay(delay_Time);
-    digitalWrite(Siren_Pin, HIGH);
-}
-
-// void Siren_Millis(int Siren_Pin, unsigned short delay_Time)
-// {
-//     if (millis() - Siren_Prev_Millis < delay_Time)
-//         digitalWrite(Siren_Pin, LOW);
-
-//     else
-//     {
-//         digitalWrite(Siren_Pin, HIGH);
-//     }
-// }
 
 void Siren_Millis(int Siren_Pin, unsigned int Active_Time, unsigned int Wait_Time = 0)
 {
@@ -216,42 +211,53 @@ void Siren_Millis(int Siren_Pin, unsigned int Active_Time, unsigned int Wait_Tim
         }
     }
 }
+// void Siren_Millis(int Siren_Pin, unsigned short delay_Time)
+// {
+//     if (millis() - Siren_Prev_Millis < delay_Time)
+//         digitalWrite(Siren_Pin, LOW);
 
+//     else
+//     {
+//         digitalWrite(Siren_Pin, HIGH);
+//     }
+// }
 void Siren_RC(int Siren1_2_RC, int Siren3_RC)
 {
     if (Siren1_2_RC == Siren_SW_Min && Prev_Siren1_2_RC == Siren_SW_Zero) // Activate Siren 1
     {
-        Siren_S = Pulse1;
-        Siren_Prev_Millis = millis();
+        Siren_Delay(Siren1, Siren_Pulse_Duration);
+        Serial.println("Activate Siren 1");
     }
     else if (Siren1_2_RC == Siren_SW_Zero && Prev_Siren1_2_RC == Siren_SW_Min) // Deactivate Siren 1
     {
-        Siren_S = Pulse1;
-        Siren_Prev_Millis = millis();
+        Siren_Delay(Siren1, Siren_Pulse_Duration);
+        Serial.println(" Deactivate Siren 1");
     }
 
     else if (Siren1_2_RC == Siren_SW_Max && Prev_Siren1_2_RC == Siren_SW_Zero) // Activate Siren 2
     {
-        Siren_S = Pulse2;
-        Siren_Prev_Millis = millis();
+        Siren_Delay(Siren2, Siren_Pulse_Duration);
+        Serial.println(" Activate Siren 2");
     }
 
     else if (Siren1_2_RC == Siren_SW_Zero && Prev_Siren1_2_RC == Siren_SW_Max) // Deactivate Siren 2
     {
-        Siren_S = Pulse2;
-        Siren_Prev_Millis = millis();
+        Siren_Delay(Siren2, Siren_Pulse_Duration);
+        Serial.println(" Deactivate Siren 2");
     }
 
     else if (Siren3_RC == Siren_SW_Max && Prev_Siren3 == Siren_SW_Min)
     {
+        Serial.println("Siren3");
+
         Siren_S = Pulse3;
         Siren_Prev_Millis = millis();
     }
-    else if (Siren3_RC == Siren_SW_Min && Prev_Siren3 == Siren_SW_Max)
-    {
-        Siren_S = Pulse3;
-        Siren_Prev_Millis = millis();
-    }
+    // else if (Siren3_RC == Siren_SW_Min && Prev_Siren3 == Siren_SW_Max)
+    // {
+    //     Siren_S = Pulse3;
+    //     Siren_Prev_Millis = millis();
+    // }
     Siren_States_Fn();
 
     Prev_Siren1_2_RC = Siren1_2_RC;
@@ -266,12 +272,12 @@ void Siren_App(int Siren1_App, int Siren2_App, int Siren3_App)
         if (Siren1_App == 1 && Siren2_App == 0 && Siren3_App == 0) // Activate Siren 1
         {
             Siren_S = Pulse1;
-            Siren_Prev_Millis = millis();
+            Siren_Delay(Siren1, Siren_Pulse_Duration);
         }
         else if (Siren1_App == 0 && Siren2_App == 1 && Siren3_App == 0) // Activate Siren 1
         {
             Siren_S = Pulse2;
-            Siren_Prev_Millis = millis();
+            Siren_Delay(Siren2, Siren_Pulse_Duration);
         }
         else if (Siren1_App == 0 && Siren2_App == 0 && Siren3_App == 1) // Activate Siren 1
         {
@@ -283,12 +289,10 @@ void Siren_App(int Siren1_App, int Siren2_App, int Siren3_App)
             switch (Siren_S)
             {
             case Pulse1:
-                Siren_S = Pulse1;
-                Siren_Prev_Millis = millis();
+                Siren_Delay(Siren1, Siren_Pulse_Duration);
                 break;
             case Pulse2:
-                Siren_S = Pulse2;
-                Siren_Prev_Millis = millis();
+                Siren_Delay(Siren2, Siren_Pulse_Duration);
                 break;
 
             default:
@@ -305,15 +309,8 @@ void Siren_App(int Siren1_App, int Siren2_App, int Siren3_App)
 
 void Siren_States_Fn()
 {
-    if (Siren_S == Pulse1)
-    {
-        Siren_Millis(Siren1, Siren_Pulse_Duration);
-    }
-    else if (Siren_S == Pulse2)
-    {
-        Siren_Millis(Siren2, Siren_Pulse_Duration);
-    }
-    else if (Siren_S == Pulse3)
+
+    if (Siren_S == Pulse3)
     {
         Siren_Millis(Siren3, Siren3_Pulse);
     }
@@ -351,6 +348,7 @@ void Siren_Serial_Control()
 
     else if (Siren_Serial_Data == '3')
     {
+        Serial.println("Siren3");
         Siren_Delay(Siren3, 200);
         delay(70);
 
@@ -358,7 +356,5 @@ void Siren_Serial_Control()
         delay(70);
 
         Siren_Delay(Siren3, 500);
-
-        Serial.println("Siren3");
     }
 }
